@@ -10,7 +10,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.math.BigDecimal;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -68,6 +70,13 @@ public class ProductController {
         productService.deleteProductById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
+    }
+
+    @GetMapping("/search/{name}")
+    public ResponseEntity searchProductsByName(@PathVariable("name") String name){
+        Product prod = Product.builder().name("Iphone14").price(new BigDecimal(123.23)).upc("0012123").QuantityOnInventory(23).build();
+        List<Product> result = Arrays.asList(prod);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }
