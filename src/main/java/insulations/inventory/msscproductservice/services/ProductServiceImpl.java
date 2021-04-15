@@ -22,9 +22,9 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Optional<Product> getProductById(UUID id) {
+    public Product getProductById(Long id) {
 
-        return Optional.of(productRepository.findProductsById(id)).orElseThrow(NotFoundException::new);
+        return productRepository.findProductsById(id);
     }
 
     public Product getProductByUpc(String upc){
@@ -32,12 +32,16 @@ public class ProductServiceImpl implements ProductService{
         return productRepository.findProductByUpc(upc).orElseThrow(NotFoundException::new);
     }
 
+
+    public Product getProductByName(String name){
+
+        return productRepository.findProductByName(name).orElseThrow(NotFoundException::new);
+    }
+
     @Override
     public void addNewProduct(Product product) {
 
-        Optional<Product> prod = productRepository.findById(product.getId());
-
-        if(productRepository.findById(prod.get().getId()).isPresent()){
+        if(productRepository.findProductByName(product.getName()).isPresent()){
 
             throw new IllegalStateException();
         }
@@ -54,15 +58,14 @@ public class ProductServiceImpl implements ProductService{
 
     }
 
-    public void updateProduct(UUID id, Product product){
+    public void updateProduct(Long id, Product product){
 
         if(productRepository.findById(id).isPresent()){
 
             Product prod = productRepository.findById(id).get();
             prod.setName(product.getName());
-            prod.setName(prod.getName());
             prod.setPrice(product.getPrice());
-            prod.setUpc(prod.getUpc());
+            prod.setUpc(product.getUpc());
             productRepository.save(prod);
         }
         else{
@@ -76,7 +79,13 @@ public class ProductServiceImpl implements ProductService{
         return productRepository.save(updatedProduct);
     }
 
-    public void deleteProductById(UUID id) {
+    public void deleteProductById(Long id) {
+
+        boolean e = productRepository.existsById(id);
+        if(!e){
+
+            throw new IllegalStateException("Product with id " + id + " does not exists");
+        }
 
         productRepository.deleteById(id);
     }
