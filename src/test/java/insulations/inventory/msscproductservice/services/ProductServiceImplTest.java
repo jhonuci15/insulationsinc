@@ -77,7 +77,13 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void getProductByName() {
+    void searchProductByName() {
+
+        Product product = validProd;
+        when(productRepository.findProductByUpc(product.getUpc())).thenReturn(Optional.of(product));
+        Product foundProd = underTest.getProductByUpc(product.getUpc());
+        assertThat(foundProd).isNotNull();
+        verify(productRepository).findProductByUpc(product.getUpc());
 
     }
 

@@ -35,13 +35,18 @@ public class ProductServiceImpl implements ProductService{
 
     public Product getProductByName(String name){
 
-        return productRepository.findProductByName(name).orElseThrow(NotFoundException::new);
+        if(productRepository.findProductByName(name) == null ){
+
+            throw new IllegalStateException();
+        }
+
+        return productRepository.findProductByName(name);
     }
 
     @Override
     public void addNewProduct(Product product) {
 
-        if(productRepository.findProductByName(product.getName()).isPresent()){
+        if(productRepository.findProductByName(product.getName())== null){
 
             throw new IllegalStateException();
         }
